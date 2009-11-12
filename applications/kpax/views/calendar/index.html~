@@ -41,8 +41,8 @@
     }
     $(document).ready(function () {    
         $("#tutorial").click(function (event) {
-           x = event.clientX;
-           y = event.clientY;
+           x = event.pageX - $("#tutorial").offset().left;
+           y = event.pageY - this.offsetTop;
            //x = $("#tutorial").offset().left - event.pageX;
            //y = $("#tutorial").offset().top - event.pageY;
            draw();

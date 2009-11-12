@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/admin/controllers/shell.py'
+p4
+sS'code'
+p5
+S'import sys\nimport cStringIO\n\nFE=10**9\n\ndef index():\n    app = request.args[0]\n    reset()\n    return dict(app=app)\n\ndef __shell(app, response):\n    import code, thread\n    from gluon.shell import env\n    (shell, lock) = (code.InteractiveInterpreter(), thread.allocate_lock())\n    shell.locals = env(app,True)\n    response._custom_commit = lambda: None\n    response._custom_rollback = lambda: None\n    return (shell, lock)\n\ndef unlock():\n    app = request.args[0]\n    (shell, lock) = cache.ram(\'shell/\'+app,lambda a=app,r=response:__shell(a,r),FE)\n    if request.vars.rollback:\n        shell.runsource("SQLDB.close_all_instances(SQLDB.rollback)")\n    else:\n        shell.runsource("SQLDB.close_all_instances(SQLDB.commit)")\n    redirect(URL(r=request,c=\'default\',f=\'design\',args=app))\n\ndef callback():    \n    app = request.args[0]\n    command = request.vars.statement\n    escape = command[:1]!=\'!\'\n    if not escape:\n        command = command[1:]\n    if command == \'%reset\':\n        reset()\n        return \'*** reset ***\'\n    elif command[0] == \'%\':\n        try:\n            command=session.shell_history[int(command[1:])]\n        except ValueError:\n            return \'\'\n    session.shell_history.append(command)\n    (shell, lock) = cache.ram(\'shell/\'+app,lambda a=app,r=response:__shell(a,r),FE)\n    try:\n        lock.acquire()\n        (oldstdout, oldstderr) = (sys.stdout, sys.stderr)\n        sys.stdout = sys.stderr = cStringIO.StringIO()\n        shell.runsource(command)\n    finally:\n        output = sys.stdout.getvalue()\n        lock.release()\n        (sys.stdout, sys.stderr) = (oldstdout, oldstderr)\n    k = len(session.shell_history) - 1\n    output = PRE(output)\n    return TABLE(TR(\'In[%i]:\'%k,PRE(command)),TR(\'Out[%i]:\'%k,output))\n\ndef reset():\n    app = request.args[0]\n    session.shell_history=[]\n    cache.ram(\'shell/\'+app,lambda a=app,r=response:__shell(a,r),0)\n    return \'done\'\n\nresponse._vars=response._caller(index)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/admin/controllers/shell.py", line 64, in <module>\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/globals.py", line 103, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/admin/controllers/shell.py", line 7, in index\n    app = request.args[0]\nIndexError: list index out of range\n'
+p8
+s.

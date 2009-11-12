@@ -1,0 +1,34 @@
+(dp1
+S'timestamp'
+p2
+S'TIMESTAMP'
+p3
+sS'completed'
+p4
+S'CHAR(1)'
+p5
+sS'score'
+p6
+S'DOUBLE'
+p7
+sS'survey'
+p8
+S'REFERENCES survey(id) ON DELETE CASCADE'
+p9
+sS'anonymous'
+p10
+S'CHAR(1)'
+p11
+sS'owner'
+p12
+S'REFERENCES user(id) ON DELETE CASCADE'
+p13
+sS'reviewer_comment'
+p14
+S'TEXT'
+p15
+sS'id'
+p16
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p17
+s.

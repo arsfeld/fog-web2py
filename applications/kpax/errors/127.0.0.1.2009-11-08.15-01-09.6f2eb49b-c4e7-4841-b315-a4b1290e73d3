@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/rh.py'
+p4
+sS'code'
+p5
+S'# coding: utf8\n# try something like\nimport ldap\n\ndef index(): return dict(message="hello from rh.py")\n\n\ndef register_user():\n    form=FORM(TABLE(\n          TR(T("First name:"), INPUT(_name="name",requires=IS_NOT_EMPTY())),\n          TR(T("Last name:"), INPUT(_name="name",requires=IS_NOT_EMPTY())),\n          TR(T("Email:"), INPUT(_name="email",requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,\'user.email\')])),\n          TR("Password:", INPUT(_name="password",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("Password (again):",\\\n          INPUT(_name="password2",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("",INPUT(_type="submit",_value="register"))))\n    if form.accepts(request.vars,session) and \\\n       form.vars.password==form.vars.password2:\n        \n    return dict(form=form)\n\nresponse._vars=response._caller(register_user)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 182, in restricted\n    ccode = compile(code.replace(\'\\r\\n\', \'\\n\'), layer, \'exec\')\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/rh.py", line 20\n    return dict(form=form)\n         ^\nIndentationError: expected an indented block\n'
+p8
+s.

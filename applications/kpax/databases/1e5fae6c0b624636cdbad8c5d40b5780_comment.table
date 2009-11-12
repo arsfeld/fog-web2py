@@ -1,0 +1,26 @@
+(dp1
+S'body'
+p2
+S'TEXT'
+p3
+sS'author'
+p4
+S'REFERENCES user(id) ON DELETE CASCADE'
+p5
+sS'page'
+p6
+S'REFERENCES page(id) ON DELETE CASCADE'
+p7
+sS'disabled'
+p8
+S'CHAR(512)'
+p9
+sS'id'
+p10
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p11
+sS'posted_on'
+p12
+S'TIMESTAMP'
+p13
+s.

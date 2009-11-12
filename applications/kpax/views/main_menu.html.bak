@@ -1,0 +1,16 @@
+{{if session.token:}}
+<link rel="stylesheet" type="text/css" href="/{{=request.application}}/static/fisheye-menu.css" />
+<script type="text/javascript" src="/{{=request.application}}/static/fisheye.js"></script>
+<div style="position: absolute; left: 0px; top: 0px;">
+<ul id="fisheye_menu">
+  <li id="fisheye_menu"><a href="/{{=request.application}}"><img src="/{{=request.application}}/default/menu_image/small/{{=T("Home")}}"/><span>Home</span></a></li>
+  <li id="fisheye_menu"><a href="/{{=request.application}}/news"><img src="/{{=request.application}}/default/menu_image/small/{{=T("News")}}"/><span>Post and Read News Announcements</span></a></li>
+  <li id="fisheye_menu"><a href="/{{=request.application}}"><img src="/{{=request.application}}/default/menu_image/small/{{=T("Meetings")}}"/><span>Reunioes</span></a></li>
+  <li id="fisheye_menu"><a href="/{{=request.application}}/folders"><img src="/{{=request.application}}/default/menu_image/small/{{=T("Files")}}"  /><span>Create and Manage Folders, Documents, Wikis, Blogs</span></a></li>
+  <li id="fisheye_menu"><a href="/{{=request.application}}/surveys"><img src="/{{=request.application}}/default/menu_image/small/Pesquisas"  /><span>Create and Manage Surveys, Assignments</span></a></li>
+  <!-- <li id="fisheye_menu"><a href="/{{=request.application}}/tasks"><img src="/{{=request.application}}/static/main_images/main_tasks_small.png"  /><span>Assign Tasks and Grades</span></a></li> //-->
+  <li id="fisheye_menu"><a href="/{{=request.application}}/chats"><img src="/{{=request.application}}/default/menu_image/small/Chat"  /><span>Create and Join Chat Lines</span></a></li>
+  <li id="fisheye_menu"><a href="/{{=request.application}}/groups"><img src="/{{=request.application}}/default/menu_image/small/Grupos"  /><span>Create and Manage Groups</span></a></li>
+  </ul>
+  </div>
+{{pass}}

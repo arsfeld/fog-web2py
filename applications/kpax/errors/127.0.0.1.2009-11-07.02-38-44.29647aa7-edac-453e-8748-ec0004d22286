@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/default.py'
+p4
+sS'code'
+p5
+S'APP=\'%s/%s\' %(HOST,request.application)\nCAS.login_url=APP+\'/cas/login\'\nCAS.check_url=APP+\'/cas/check\'\nCAS.logout_url=APP+\'/cas/logout\'\nCAS.my_url=APP+\'/default/login\'\n\ndef login():\n    session.token=CAS.login(request)\n    print session.token\n    if session.token:\n        id,email,name=session.token ### specific for web2py CAS service\n        redirect(MAIN)\n    return dict()\n\ndef logout():\n    session.token=None\n    CAS.logout()\n\ndef index():\n    if not session.token: \n        redirect(LOGIN)\n    else:\n        redirect(MAIN)\n\ndef menu_image():\n    import PIL\n    from PIL import Image\n    import ImageFilter\n    import ImageFont\n    import ImageDraw\n\n    import StringIO\n    \n    aa_factor = 2\n    \n    if request.args[0] == \'small\':\n        small_size = (100, 41)\n        size = (100 * aa_factor, 41 * aa_factor)\n        font_size = 16\n    else:\n        small_size = (390, 157)\n        size = (390 * aa_factor, 157 * aa_factor)\n        font_size = 64\n    \n    txt = request.args[1]\n    if txt.lower.endswith(\'.png\'):\n        txt = txt[:4]\n    \n    font = ImageFont.truetype(\'/usr/share/fonts/TTF/VeraBd.ttf\', font_size * aa_factor)\n\n    txt_size = font.getsize(txt)\n    txt_pos = (size[0] / 2 - txt_size[0] / 2, size[1] / 2 - txt_size[1] / 2)\n\n    i = Image.new(\'RGBA\', size)\n    draw = ImageDraw.Draw(i)\n    draw.text(txt_pos, txt, font=font, fill=(0, 0, 0))\n\n    for n in range(5 * aa_factor):\n        i = i.filter(ImageFilter.BLUR)\n    draw = ImageDraw.Draw(i)\n\n    draw.text(txt_pos, txt, font=font)\n\n    i = i.resize(small_size, Image.ANTIALIAS)\n\n    output = StringIO.StringIO()\n\n    i.save(output, \'PNG\')\n    \n    response.headers[\'Content-Type\']= "image/png"\n    return output.getvalue()\n\nresponse._vars=response._caller(menu_image)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/default.py", line 73, in <module>\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/globals.py", line 103, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/default.py", line 46, in menu_image\n    if txt.lower.endswith(\'.png\'):\nAttributeError: \'builtin_function_or_method\' object has no attribute \'endswith\'\n'
+p8
+s.

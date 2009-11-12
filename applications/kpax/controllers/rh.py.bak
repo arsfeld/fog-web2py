@@ -1,0 +1,40 @@
+# coding: utf8
+# try something like
+import ldap
+
+fog_dn = 'dc=fog,dc=icmc,dc=usp,dc=br'
+
+def index(): return dict(message="hello from rh.py")
+
+def list_users():
+    con = ldap.initialize('ldap://fog.icmc.usp.br')
+    users_list = con.search_s('ou=people,' + fog_dn, ldap.SCOPE_SUBTREE, '(objectClass=posixAccount)')
+    return dict(list=users_list)    
+
+def register_user():
+    form=FORM(TABLE(
+          TR(T("First name:"), INPUT(_name="firstname",requires=IS_NOT_EMPTY())),
+          TR(T("Last name:"), INPUT(_name="lastname",requires=IS_NOT_EMPTY())),
+          TR(T("Username:"), INPUT(_name="username", requires=IS_NOT_EMPTY())),
+          TR(T("Email:"), INPUT(_name="email",requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'user.email')])),
+          TR("Password:", INPUT(_name="password",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),\
+                    TR("Password (again):",\
+          INPUT(_name="password2",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),\
+                    TR("",INPUT(_type="submit",_value="register"))))
+    if form.accepts(request.vars,session) and \
+       form.vars.password==form.vars.password2:
+        con = ldap.initialize('ldap://fog.icmc.usp.br')
+        con.simple_bind_s('cn=admin,' + fog_dn, 'f0gs3rv3r')
+        uid_list = con.search_s('ou=people,' + fog_dn, ldap.SCOPE_SUBTREE, attrlist=['uidNumber'])
+        uid = max([int(i[1].get('uidNumber', [1000])[0]) for i in uid_list]) + 1
+        con.add_s('uid=%s,ou=people,' % form.vars.username + fog_dn, 
+            [('uid', form.vars.username),
+             ('objectClass', ['posixAccount', 'inetOrgPerson']),
+             ('cn', form.vars.firstname),
+             ('sn', form.vars.lastname), 
+             ('uidNumber', str(uid)),
+             ('gidNumber', '1000'), 
+             ('homeDirectory', '')])
+        response.flash = "User registered"
+        con.unbind()
+    return dict(form=form)

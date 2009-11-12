@@ -1,0 +1,37 @@
+{{extend 'layout.html'}}
+
+<h1>Groups</h1>
+
+<img src="{{=URL(r=request,c='static',f='group/group.png')}}" align="right"/>
+
+<h2>You are member of the following groups</h2>
+[<a href="{{=URL(r=request,f='create_group')}}">create group</a>]
+<br/>
+{{if len(mygroups):}}
+<table>
+{{for a in mygroups:}}
+<tr>
+<td>[G{{=a.users_group.id}}]</td><td><a onclick="$('#a{{=a.users_group.id}}').slideToggle();">{{=a.users_group.name}}</a> managed by <a href="mailto:{{=a.user.email}}">{{=a.user.username}}</a> on {{=a.users_group.created_on}}
+{{if a.users_group.owner!=user_id:}}
+[{{=A('X',_href=URL(r=request,f='unjoin',args=str(a.users_group.id)))}}]
+{{pass}}
+<br/>
+<div id="a{{=a.users_group.id}}" class="box">
+{{=XML(a.users_group.description)}}
+<br/>
+{{if a.users_group.owner==user_id:}}
+[<a href="{{=URL(r=request,c='access',f='change',args=['users_group',a.users_group.id],vars=dict(forward=URL(r=request)))}}">change permissions</a>][<a href="{{=URL(r=request,f='members',args=[a.users_group.id])}}">members</a>][<a href="{{=URL(r=request,f='approve',args=[a.users_group.id])}}">pending members</a>][<a href="{{=URL(r=request,f='edit_group',args=[a.users_group.id])}}">edit</a>]
+{{pass}}
+</div>
+<script><!--
+$('#a{{=a.users_group.id}}').hide();
+//--></script>
+</td></tr>
+{{pass}}
+</table>
+{{else:}}
+no groups yet
+{{pass}}
+<br/>
+<h2>Join a group</h2>
+Group id (for example G1): {{=form}}

@@ -1,0 +1,30 @@
+(dp1
+S'comment'
+p2
+S'TEXT'
+p3
+sS'grade'
+p4
+S'DOUBLE'
+p5
+sS'question'
+p6
+S'REFERENCES question(id) ON DELETE CASCADE'
+p7
+sS'value'
+p8
+S'CHAR(512)'
+p9
+sS'file'
+p10
+S'CHAR(512)'
+p11
+sS'sa'
+p12
+S'REFERENCES sa(id) ON DELETE CASCADE'
+p13
+sS'id'
+p14
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p15
+s.

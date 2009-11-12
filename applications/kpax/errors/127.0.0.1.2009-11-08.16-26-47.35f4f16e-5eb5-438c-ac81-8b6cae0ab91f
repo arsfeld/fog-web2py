@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/models/db.py'
+p4
+sS'code'
+p5
+S'import random\nimport time; now=time.time()\nimport datetime; \ntimestamp=datetime.datetime.today()\ntoday=datetime.date.today()\n\ndb=SQLDB("sqlite://main.db")\n\ndb.define_table(\'user\',\n                SQLField(\'firstname\'),\n                SQLField(\'lastname\'),\n                SQLField(\'username\'),\n                SQLField(\'email\'),\n                SQLField(\'password\',\'password\'),\n                SQLField(\'verification\',default=\'\'),\n                SQLField(\'member\', \'boolean\'),\n                SQLField(\'last_attempt_time\',\'integer\',default=0),\n                SQLField(\'failed_attempts\',\'integer\',default=0),\n                SQLField(\'member_since\', \'date\'),\n                SQLField(\'cell_phone\', \'string\'),\n                SQLField(\'email_gmail\', \'string\'),\n                SQLField(\'nrousp\', \'string\'),\n                SQLField(\'course\', \'string\'),\n                SQLField(\'course_year\', \'string\'),\n                SQLField(\'current_area\', \'string\'),\n                )\n\ndb.user.name.requires=IS_NOT_EMPTY()\ndb.user.email.requires=[IS_EMAIL(),IS_NOT_IN_DB(db,\'user.email\')]\n\ndb.define_table(\'ticket\',\n                SQLField(\'ctime\',\'integer\',default=now),\n                SQLField(\'url\'),\n                SQLField(\'code\'),\n                SQLField(\'user\',db.user))\n\nVALID_USER=IS_IN_DB(db(db.user.verification==\'\'),\'user.id\',\'%(id)s:%(name)s\')\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/models/db.py", line 28, in <module>\n    db.user.name.requires=IS_NOT_EMPTY()\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/sql.py", line 1487, in __getattr__\n    return dict.__getitem__(self,key)\nKeyError: \'name\'\n'
+p8
+s.

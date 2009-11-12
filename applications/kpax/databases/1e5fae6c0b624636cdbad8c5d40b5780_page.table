@@ -1,0 +1,46 @@
+(dp1
+S'body'
+p2
+S'TEXT'
+p3
+sS'locked_on'
+p4
+S'INTEGER'
+p5
+sS'modified_by'
+p6
+S'REFERENCES user(id) ON DELETE CASCADE'
+p7
+sS'title'
+p8
+S'CHAR(512)'
+p9
+sS'locked_by'
+p10
+S'INTEGER'
+p11
+sS'number'
+p12
+S'INTEGER'
+p13
+sS'readonly'
+p14
+S'CHAR(1)'
+p15
+sS'comments_enabled'
+p16
+S'CHAR(1)'
+p17
+sS'modified_on'
+p18
+S'TIMESTAMP'
+p19
+sS'folder'
+p20
+S'REFERENCES folder(id) ON DELETE CASCADE'
+p21
+sS'id'
+p22
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p23
+s.

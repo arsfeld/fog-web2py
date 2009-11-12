@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/rh.py'
+p4
+sS'code'
+p5
+S'# coding: utf8\n# try something like\nimport ldap\n\ndef index(): return dict(message="hello from rh.py")\n\n\ndef register_user():\n    form=FORM(TABLE(\n          TR(T("First name:"), INPUT(_name="firstname",requires=IS_NOT_EMPTY())),\n          TR(T("Last name:"), INPUT(_name="lastname",requires=IS_NOT_EMPTY())),\n          TR(T("Username:"), INPUT(_name="username", requires=IS_NOT_EMPTY())),\n          TR(T("Email:"), INPUT(_name="email",requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,\'user.email\')])),\n          TR("Password:", INPUT(_name="password",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("Password (again):",\\\n          INPUT(_name="password2",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("",INPUT(_type="submit",_value="register"))))\n    if form.accepts(request.vars,session) and \\\n       form.vars.password==form.vars.password2:\n        con = ldap.initialize(\'ldap://fog.icmc.usp.br\')\n        con.simple_bind_s(\'cn=admin,dc=fog,dc=icmc,dc=usp,dc=br\', \'f0gs3rv3r\')\n        uid_list = con.search_s(\'ou=people,dc=fog,dc=icmc,dc=usp,dc=br\', ldap.SCOPE_SUBTREE, attrlist=[\'uidNumber\'])\n        uid = max([int(i[1].get(\'uidNumber\', [1000])[0]) for i in uid_list]) + 1\n        con.add_s(\'uid=%s,ou=people,dc=fog,dc=icmc,dc=usp,dc=br\' % form.vars.username, \n            [(\'uid\', form.vars.username),\n             (\'objectClass\', [\'posixAccount\', \'inetOrgPerson\']),\n             (\'cn\', form.vars.firstname),\n             (\'sn\', form.vars.lastname), \n             (\'uidNumber\', str(uid)),\n             (\'gidNumber\', \'1000\'), \n             (\'homeDirectory\', \'\')])\n        response.flash = "User registered"\n        con.unbind()\n    return dict(form=form)\n\nresponse._vars=response._caller(register_user)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/rh.py", line 36, in <module>\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/globals.py", line 103, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/rh.py", line 31, in register_user\n    (\'homeDirectory\', \'\')])\n  File "/usr/lib/python2.6/site-packages/ldap/ldapobject.py", line 186, in add_s\n    return self.result(msgid,all=1,timeout=self.timeout)\n  File "/usr/lib/python2.6/site-packages/ldap/ldapobject.py", line 428, in result\n    res_type,res_data,res_msgid = self.result2(msgid,all,timeout)\n  File "/usr/lib/python2.6/site-packages/ldap/ldapobject.py", line 432, in result2\n    res_type, res_data, res_msgid, srv_ctrls = self.result3(msgid,all,timeout)\n  File "/usr/lib/python2.6/site-packages/ldap/ldapobject.py", line 438, in result3\n    ldap_result = self._ldap_call(self._l.result3,msgid,all,timeout)\n  File "/usr/lib/python2.6/site-packages/ldap/ldapobject.py", line 96, in _ldap_call\n    result = func(*args,**kwargs)\nALREADY_EXISTS: {\'desc\': \'Already exists\'}\n'
+p8
+s.

@@ -1,0 +1,11 @@
+{{extend 'layout.html'}}
+<h1>Approve Membership Requests</h1>
+<form>
+{{for req in pending:}}
+{{=req.user.name}} &lt;{{=req.user.email}}&gt;
+Approve <input type="radio" name="{{=req.membership_request.id}}" value="approve"/>
+Deny <input type="radio" name="{{=req.membership_request.id}}" value="deny"/>
+<br/>
+{{pass}}
+<input type="submit"/>
+</form>

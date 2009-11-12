@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/members.py'
+p4
+sS'code'
+p5
+S'# coding: utf8\nimport ldap\n\nfog_dn = \'dc=fog,dc=icmc,dc=usp,dc=br\'\n\ndef index(): \n    table = TABLE(TR(TD("Username"), TD("First name"))*[TR(TD(member.username), TD(member.firstname)) for member in db(db.user.id>0).select()])\n    return dict(table=table)\n    \ndef in_directory():\n    con = ldap.initialize(\'ldap://fog.icmc.usp.br\')\n    username = request.args[0]\n    users_list = con.search_s(\'ou=people,\' + fog_dn, ldap.SCOPE_SUBTREE, \'(uid=%s)\' % username)\n    con.unbind()\n    return len(users_list) > 0\n\ndef list():\n    con = ldap.initialize(\'ldap://fog.icmc.usp.br\')\n    users_list = con.search_s(\'ou=people,\' + fog_dn, ldap.SCOPE_SUBTREE, \'(objectClass=posixAccount)\')\n    return dict(list=users_list)    \n\ndef register():\n    form=FORM(TABLE(\n          TR(T("First name:"), INPUT(_name="firstname",requires=IS_NOT_EMPTY())),\n          TR(T("Last name:"), INPUT(_name="lastname",requires=IS_NOT_EMPTY())),\n          TR(T("Username:"), INPUT(_name="username", requires=IS_NOT_EMPTY())),\n          TR(T("Email:"), INPUT(_name="email",requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,\'user.email\')])),\n          TR("Password:", INPUT(_name="password",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("Password (again):",\\\n          INPUT(_name="password2",_type=\'password\',requires=[IS_NOT_EMPTY(),CRYPT()])),\\\n                    TR("",INPUT(_type="submit",_value="register"))))\n    if form.accepts(request.vars,session) and \\\n       form.vars.password==form.vars.password2:\n        con = ldap.initialize(\'ldap://fog.icmc.usp.br\')\n        con.simple_bind_s(\'cn=admin,\' + fog_dn, \'f0gs3rv3r\')\n        uid_list = con.search_s(\'ou=people,\' + fog_dn, ldap.SCOPE_SUBTREE, attrlist=[\'uidNumber\'])\n        uid = max([int(i[1].get(\'uidNumber\', [1000])[0]) for i in uid_list]) + 1\n        con.add_s(\'uid=%s,ou=people,\' % form.vars.username + fog_dn, \n            [(\'uid\', form.vars.username),\n             (\'objectClass\', [\'posixAccount\', \'inetOrgPerson\']),\n             (\'cn\', form.vars.firstname),\n             (\'sn\', form.vars.lastname), \n             (\'uidNumber\', str(uid)),\n             (\'gidNumber\', \'1000\'), \n             (\'homeDirectory\', \'\')])\n        con.unbind()\n        response.flash = "User registered"\n    return dict(form=form)\n\nresponse._vars=response._caller(index)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/members.py", line 50, in <module>\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/gluon/globals.py", line 103, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/arosenfeld/Dropbox/fog_backup/web2py/applications/kpax/controllers/members.py", line 7, in index\n    table = TABLE(TR(TD("Username"), TD("First name"))*[TR(TD(member.username), TD(member.firstname)) for member in db(db.user.id>0).select()])\nTypeError: can\'t multiply sequence by non-int of type \'TR\'\n'
+p8
+s.

@@ -1,0 +1,30 @@
+(dp1
+S'body'
+p2
+S'TEXT'
+p3
+sS'title'
+p4
+S'CHAR(512)'
+p5
+sS'to_rss'
+p6
+S'CHAR(1)'
+p7
+sS'expires_on'
+p8
+S'DATE'
+p9
+sS'owner'
+p10
+S'REFERENCES user(id) ON DELETE CASCADE'
+p11
+sS'id'
+p12
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p13
+sS'posted_on'
+p14
+S'TIMESTAMP'
+p15
+s.

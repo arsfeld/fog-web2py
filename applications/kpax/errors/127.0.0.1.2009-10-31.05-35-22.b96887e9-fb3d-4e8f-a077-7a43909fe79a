@@ -1,0 +1,17 @@
+(dp1
+S'output'
+p2
+S''
+sS'layer'
+p3
+S'/home/arosenfeld/junk/web2py/applications/kpax/controllers/access.py'
+p4
+sS'code'
+p5
+S'if not session.token: redirect(LOGIN)\n\ndef change():\n    if len(request.args)<2: redirect(MAIN)\n    table_name=request.args[0]\n    record_id=request.args[1]\n    if not is_owner(user_id,table_name,record_id):\n        session.flash="not authorized"\n        redirect(MAIN)\n    access_types=db[table_name].access_types\n    rows=db(db.access.table_name==table_name)\\\n           (db.access.record_id==record_id)\\\n           (db.access.users_group==db.users_group.id)\\\n           .select(orderby=db.access.id)\n    group_keys=dict([(r.users_group.id,r.access.access_type) for r in rows])\n    keys=dict([(r.access.id,r.access.access_type) for r in rows])\n    accesses=[]\n    for g in session.groups:\n        if table_name==\'users_group\' and g.id==int(record_id): continue\n        item=Storage()\n        item.group_id=g.id\n        item.group_name=g.name\n        item.membership_type=g.membership_type\n        if group_keys.has_key(g.id): item.access_type=group_keys[g.id] \n        else: item.access_type=\'none\'\n        accesses.append(item)\n    ch=False\n    for key,value in request.vars.items():\n        if key==\'forward\': continue\n        ch=True\n        g=int(key[1:])\n        if g==g_tuple[1]: continue\n        if g==g_tuple[0] and user_id!=1: continue\n        if group_keys.has_key(g):\n            s=db(db.access.users_group==g)\\\n                (db.access.record_id==record_id)\\\n                (db.access.table_name==table_name)\n            if value==\'none\': \n                s.delete()\n            elif value in access_types: \n                s.update(access_type=value)\n        elif value!=\'none\' and value in access_types:\n            db.access.insert(users_group=g,\n                             table_name=table_name,\n                             record_id=record_id,\n                             access_type=value)\n    if ch: redirect(request.vars.forward)\n    return dict(accesses=accesses,access_types=access_types)\nresponse._vars=response._caller(change)\n'
+p6
+sS'traceback'
+p7
+S'Traceback (most recent call last):\n  File "/home/arosenfeld/junk/web2py/gluon/restricted.py", line 184, in restricted\n    exec ccode in environment\n  File "/home/arosenfeld/junk/web2py/applications/kpax/controllers/access.py", line 49, in <module>\n  File "/home/arosenfeld/junk/web2py/gluon/globals.py", line 103, in <lambda>\n    self._caller = lambda f: f()\n  File "/home/arosenfeld/junk/web2py/applications/kpax/controllers/access.py", line 47, in change\n    if ch: redirect(request.vars.forward)\n  File "/home/arosenfeld/junk/web2py/gluon/http.py", line 101, in redirect\n    location = location.replace(\'\\r\', \'%0D\').replace(\'\\n\', \'%0A\')\nAttributeError: \'list\' object has no attribute \'replace\'\n'
+p8
+s.

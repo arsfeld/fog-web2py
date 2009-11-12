@@ -1,0 +1,252 @@
+timestamp: 2009-10-31T04:12:18.789987
+CREATE TABLE user(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name CHAR(512),
+	email CHAR(512),
+	password CHAR(512),
+	verification CHAR(512),
+	last_attempt_time INTEGER,
+	failed_attempts INTEGER
+);
+success!
+timestamp: 2009-10-31T04:12:18.868211
+CREATE TABLE ticket(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	ctime INTEGER,
+	url CHAR(512),
+	code CHAR(512),
+	user REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:18.936503
+CREATE TABLE chat_line(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name CHAR(512),
+	description TEXT,
+	created_on TIMESTAMP,
+	owner REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:19.030142
+CREATE TABLE message(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	chat_line REFERENCES chat_line(id) ON DELETE CASCADE,
+	body TEXT,
+	posted_on TIMESTAMP,
+	posted_by REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:19.116353
+CREATE TABLE folder(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name CHAR(512),
+	description TEXT,
+	keywords CHAR(128),
+	is_open CHAR(1),
+	created_on TIMESTAMP,
+	owner REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:19.199372
+CREATE TABLE page(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	folder REFERENCES folder(id) ON DELETE CASCADE,
+	number INTEGER,
+	locked_on INTEGER,
+	locked_by INTEGER,
+	title CHAR(512),
+	body TEXT,
+	readonly CHAR(1),
+	comments_enabled CHAR(1),
+	modified_on TIMESTAMP,
+	modified_by REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:19.282813
+CREATE TABLE old_page(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	page REFERENCES page(id) ON DELETE CASCADE,
+	title CHAR(512),
+	body TEXT,
+	modified_on TIMESTAMP,
+	modified_by REFERENCES user(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:19.365263
+CREATE TABLE document(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	page REFERENCES page(id) ON DELETE CASCADE,
+	title CHAR(512),
+	file CHAR(512),
+	uploaded_by REFERENCES user(id) ON DELETE CASCADE,
+	uploaded_on TIMESTAMP
+);
+success!
+timestamp: 2009-10-31T04:12:19.451427
+CREATE TABLE comment(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	page REFERENCES page(id) ON DELETE CASCADE,
+	posted_on TIMESTAMP,
+	author REFERENCES user(id) ON DELETE CASCADE,
+	disabled CHAR(512),
+	body TEXT
+);
+success!
+timestamp: 2009-10-31T04:12:19.527496
+CREATE TABLE users_group(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	name CHAR(512),
+	description TEXT,
+	owner REFERENCES user(id) ON DELETE CASCADE,
+	open CHAR(1),
+	created_on TIMESTAMP
+);
+success!
+timestamp: 2009-10-31T04:12:19.594585
+CREATE TABLE membership(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user REFERENCES user(id) ON DELETE CASCADE,
+	users_group REFERENCES users_group(id) ON DELETE CASCADE,
+	membership_type CHAR(512)
+);
+success!
+timestamp: 2009-10-31T04:12:19.678597
+CREATE TABLE membership_request(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user REFERENCES user(id) ON DELETE CASCADE,
+	users_group REFERENCES users_group(id) ON DELETE CASCADE,
+	membership_type CHAR(512)
+);
+success!
+timestamp: 2009-10-31T04:12:19.761759
+CREATE TABLE access(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	users_group REFERENCES users_group(id) ON DELETE CASCADE,
+	table_name CHAR(512),
+	record_id INTEGER,
+	access_type CHAR(512)
+);
+success!
+timestamp: 2009-10-31T04:12:19.848563
+CREATE TABLE announcement(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	title CHAR(512),
+	body TEXT,
+	owner REFERENCES user(id) ON DELETE CASCADE,
+	to_rss CHAR(1),
+	posted_on TIMESTAMP,
+	expires_on DATE
+);
+success!
+timestamp: 2009-10-31T04:12:19.934956
+CREATE TABLE ignore_announcement(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	user REFERENCES user(id) ON DELETE CASCADE,
+	announcement REFERENCES announcement(id) ON DELETE CASCADE
+);
+success!
+timestamp: 2009-10-31T04:12:20.024413
+CREATE TABLE survey(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	owner REFERENCES user(id) ON DELETE CASCADE,
+	timestamp TIMESTAMP,
+	start DATE,
+	stop DATE,
+	title CHAR(512),
+	description TEXT,
+	is_assignment CHAR(1),
+	normalize_score_to DOUBLE,
+	anonymous CHAR(1)
+);
+success!
+timestamp: 2009-10-31T04:12:20.152832
+CREATE TABLE sa(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	survey REFERENCES survey(id) ON DELETE CASCADE,
+	owner REFERENCES user(id) ON DELETE CASCADE,
+	anonymous CHAR(1),
+	timestamp TIMESTAMP,
+	score DOUBLE,
+	reviewer_comment TEXT,
+	completed CHAR(1)
+);
+success!
+timestamp: 2009-10-31T04:12:20.223905
+CREATE TABLE question(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	survey REFERENCES survey(id) ON DELETE CASCADE,
+	number INTEGER,
+	title CHAR(512),
+	body TEXT,
+	type CHAR(512),
+	minimum INTEGER,
+	maximum INTEGER,
+	correct_answer CHAR(512),
+	points DOUBLE,
+	option_A CHAR(512),
+	points_for_option_A DOUBLE,
+	option_B CHAR(512),
+	points_for_option_B DOUBLE,
+	option_C CHAR(512),
+	points_for_option_C DOUBLE,
+	option_D CHAR(512),
+	points_for_option_D DOUBLE,
+	option_E CHAR(512),
+	points_for_option_E DOUBLE,
+	option_F CHAR(512),
+	points_for_option_F DOUBLE,
+	option_G CHAR(512),
+	points_for_option_G DOUBLE,
+	option_H CHAR(512),
+	points_for_option_H DOUBLE,
+	required CHAR(1),
+	comments_enabled CHAR(1)
+);
+success!
+timestamp: 2009-10-31T04:12:20.303447
+CREATE TABLE answer(
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	question REFERENCES question(id) ON DELETE CASCADE,
+	sa REFERENCES sa(id) ON DELETE CASCADE,
+	value CHAR(512),
+	file CHAR(512),
+	grade DOUBLE,
+	comment TEXT
+);
+success!
+timestamp: 2009-11-07T04:35:10.594418
+ALTER TABLE user ADD cell_phone CHAR(512);
+success!
+timestamp: 2009-11-07T04:35:10.645754
+ALTER TABLE user ADD member_since DATE;
+success!
+timestamp: 2009-11-07T04:35:10.696233
+ALTER TABLE user ADD usp CHAR(512);
+success!
+timestamp: 2009-11-07T04:35:10.747013
+ALTER TABLE user ADD course CHAR(512);
+success!
+timestamp: 2009-11-07T04:35:10.805814
+ALTER TABLE user ADD course_year CHAR(512);
+success!
+timestamp: 2009-11-07T04:35:10.914151
+ALTER TABLE user ADD email_gmail CHAR(512);
+success!
+timestamp: 2009-11-07T04:35:10.965442
+ALTER TABLE user ADD current_area CHAR(512);
+success!
+timestamp: 2009-11-08T16:26:47.189377
+ALTER TABLE user ADD username CHAR(512);
+success!
+timestamp: 2009-11-08T16:26:47.242783
+ALTER TABLE user ADD firstname CHAR(512);
+success!
+timestamp: 2009-11-08T16:26:47.301633
+ALTER TABLE user ADD lastname CHAR(512);
+success!
+timestamp: 2009-11-08T16:26:47.353703
+ALTER TABLE user ADD member CHAR(1);
+success!
+timestamp: 2009-11-08T16:26:47.429538
+ALTER TABLE user ADD nrousp CHAR(512);
+success!

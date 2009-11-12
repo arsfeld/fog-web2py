@@ -1,0 +1,22 @@
+(dp1
+S'record_id'
+p2
+S'INTEGER'
+p3
+sS'table_name'
+p4
+S'CHAR(512)'
+p5
+sS'id'
+p6
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p7
+sS'access_type'
+p8
+S'CHAR(512)'
+p9
+sS'users_group'
+p10
+S'REFERENCES users_group(id) ON DELETE CASCADE'
+p11
+s.

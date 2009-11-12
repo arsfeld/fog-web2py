@@ -1,0 +1,3 @@
+#0-59/1	*	*	*	*	root python /path/to/python/script
+10	*	*	*	*	root **applications/admin/cron/expire_sessions.py
+

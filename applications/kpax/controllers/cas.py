@@ -1,0 +1,192 @@
+import md5, random, time
+
+response.title='Central Authentication Service (CAS)'
+response.view='cas/generic.html'
+DT=300
+
+menu_out=[
+    ['login',request.function=='login',URL(r=request,f='login')],
+    ['register',request.function=='register',URL(r=request,f='register')],
+    ['retrieve password',request.function=='retrieve',URL(r=request,f='retrieve')]]
+menu_in=[
+    ['edit profile',request.function=='edit_profile',URL(r=request,f='edit_profile')],
+    ['change password',request.function=='change_password',URL(r=request,f='change_password')]]
+
+response.menu=menu_in if session.ticket else menu_out
+
+if request.vars.service: session.service=request.vars.service
+if not session.service: session.service=URL(r=request,f='login')
+if not session.ctime: session.ctime=0
+if session.ctime<now-DT and request.function in ['change_password','edit_profile']:
+    redirect(URL(r=request,f='logout'))
+else:
+    session.ctime=now    
+
+def index():
+    if session.ticket:
+        return dict(form=B("Welcome %(name)s" % {'name':session.user_name}))
+    else:
+        return dict(form=B("You are NOT logged in"))
+
+def insert_ticket(session):
+    db(db.ticket.url==session.service)\
+      (db.ticket.user==session.user_id).delete()
+    db.ticket.insert(code=session.ticket,user=session.user_id,
+                     url=session.service,ctime=now)
+
+def login(): 
+    response.menu=menu_out
+    if request.vars.service and session.ticket and session.ctime>now-DT:
+        insert_ticket(session)
+        redirect(session.service+"?ticket="+session.ticket)
+    form=FORM(TABLE(TR("Username:",INPUT(_name="username",requires=IS_NOT_EMPTY())),
+                    TR("Password:",INPUT(_name="password",_type='password',
+                                         requires=[IS_NOT_EMPTY(),CRYPT()])),
+                    TR("",INPUT(_type="submit",_value="login"))))
+    if form.accepts(request.vars,session):
+        r=db(db.user.username==form.vars.username)\
+            (db.user.password==form.vars.password)\
+            (db.user.verification=='')\
+             .select()
+        if len(r)>0:
+            if r[0].verification:
+                response.flash = "Please check your email for the authentication url"
+            else:
+                session.user_id=r[0].id
+                session.user_name=r[0].username
+                session.user_email=r[0].email
+                session.ticket=str(time.time()*random.random())
+                session.ctime=now
+                session.flash='User logged in'
+                print session
+                insert_ticket(session)
+                redirect(session.service+"?ticket="+session.ticket)
+        else:
+            time.sleep(2)
+            response.flash='Invalid login'
+    if form.errors:
+        response.flash='Invalid login'
+    return dict(form=form)
+
+def check():
+    response.headers['Content-Type']='text'
+    rows=db(db.ticket.url==request.vars.service)\
+           (db.ticket.code==request.vars.ticket)\
+           (db.ticket.ctime>now-60)\
+           (db.ticket.user==db.user.id).select()    
+    if len(rows):
+        user=rows[0].user
+        return 'yes\n%s:%s:%s'%(user.id,user.email,user.username)
+    return 'no\n'
+
+def logout():
+    response.menu=menu_out
+    session.ticket=None
+    response.flash="Logged out"
+    return dict(form=B("Bye, %(name)s" % {'name':session.user_name}))
+
+def register():
+    form=FORM(TABLE(
+          TR(T("First name:"), INPUT(_name="firstname",requires=IS_NOT_EMPTY())),
+          TR(T("Last name:"), INPUT(_name="lastname",requires=IS_NOT_EMPTY())),
+          TR(T("Username:"), INPUT(_name="username", requires=IS_NOT_EMPTY())),
+          TR(T("Email:"), INPUT(_name="email",requires=[IS_NOT_EMPTY(), IS_NOT_IN_DB(db,'user.email')])),
+          TR("Password:", INPUT(_name="password",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),\
+                    TR("Password (again):",\
+          INPUT(_name="password2",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),\
+                    TR("",INPUT(_type="submit",_value="register"))))
+    if form.accepts(request.vars,session) and \
+       form.vars.password==form.vars.password2:
+        if EMAIL_VERIFICATION:
+            key=md5.new(str(random.randint(0,9999))).hexdigest()
+        else:
+            key=''
+        id=db.user.insert(firstname=form.vars.firstname,
+                          lastname=form.vars.lastname,
+                          username=form.vars.username,
+                          email=form.vars.email,
+                          password=form.vars.password,
+                          verification=key)
+        if EMAIL_VERIFICATION:
+            message="to complete registration visit: %s?id=%s&key=%s"%(CAS.verify_url,id,key) 
+            try:
+                email(EMAIL_SENDER,form.vars.email,'registration',message)
+                session.flash="An email was sent to you"
+                redirect(URL(r=request,f='login'))
+            except Exception:
+                print message
+                response.flash="Internal error, we are unable to send the email"
+        else:
+            response.flash='Registration completed, you may login now'
+            redirect(URL(r=request,f='login'))
+    elif form.vars.password!=form.vars.password2:
+        form.errors.password2='passwords do not match'
+        response.flash="Form error"
+    return dict(form=form)
+
+def verify():
+    id=request.vars.id
+    key=request.vars.key
+    r=db(db.user.id==id)\
+        (db.user.verification==key)\
+        .select()
+    if len(r)==0: raise HTTP(400,'page does not exist')
+    r[0].update_record(verification='')
+    session.ticket=str(time.time()*random.random())
+    session.user_id=r[0].id
+    session.user_name=r[0].name
+    session.user_email=r[0].email
+    session.ctime=now
+    insert_ticket(session)
+    if r[0].password=='':
+        session.flash='You must change your password'
+        redirect(URL(r=request,f="change_password"))
+    else: session.flash='registration complete'
+    redirect(session.service)
+
+def retrieve():
+    form=FORM(TABLE(TR("Email:",INPUT(_name="email",requires=[IS_NOT_EMPTY(),IS_IN_DB(db,'user.email')])),
+                    TR("",INPUT(_type="submit",_value="retrieve"))))    
+    if form.accepts(request.vars,session):
+        r=db(db.user.email==form.vars.email).select()
+        if len(r):
+            key=md5.new(str(random.randint(0,9999))).hexdigest()
+            id=r[0].id
+            r[0].update_record(password='',verification=key)
+            message="To change your password visit: %s?id=%s&key=%s"%(CAS.verify_url,id,key) 
+            try:
+                email(EMAIL_SENDER,form.vars.email,'registration',message)
+                session.flash="An email was sent to you"            
+                redirect(URL(r=request,f='login'))                
+            except Exception:
+                print message
+                response.flash="Internal error, we are unable to send the email"
+        else:
+            form.errors.email='email not in database'
+            response.flash="Form error"
+    return dict(form=form)
+
+def change_password():
+    if not session.ticket: redirect(URL(r=request,f='login'))
+    form=FORM(TABLE(TR("Password:",INPUT(_name="password",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),
+                    TR("Password (again):",INPUT(_name="password2",_type='password',requires=[IS_NOT_EMPTY(),CRYPT()])),
+                    TR("",INPUT(_type="submit",_value="register"))))    
+    if form.accepts(request.vars,session) and \
+       form.vars.password==form.vars.password2:
+        db(db.user.id==session.user_id).update(password=form.vars.password)
+        session.flash='password updated'
+        redirect(session.service)
+    elif form.vars.password!=form.vars.password2:
+        form.errors.passwords2='passwords do not match'
+        response.flash="Form error"
+    return dict(form=form)
+
+
+def edit_profile():
+    if not session.ticket: redirect(URL(r=request,f='login'))
+    user=db(db.user.id==session.user_id).select()[0]
+    form=SQLFORM(db.user,user,fields=['firstname','lastname','email'],showid=False)
+    if form.accepts(request.vars,session):
+        session.flash='profile updated'
+        redirect(session.service)
+    return dict(form=form)

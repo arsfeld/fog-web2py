@@ -1,0 +1,22 @@
+(dp1
+S'owner'
+p2
+S'REFERENCES user(id) ON DELETE CASCADE'
+p3
+sS'description'
+p4
+S'TEXT'
+p5
+sS'id'
+p6
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
+p7
+sS'created_on'
+p8
+S'TIMESTAMP'
+p9
+sS'name'
+p10
+S'CHAR(512)'
+p11
+s.

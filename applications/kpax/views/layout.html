@@ -17,50 +17,49 @@ $('.delete').attr('onclick','if(this.checked) if(!confirm("Sure you want to dele
 //--></script>
 </head>
 <body>
-<div class="header">
- <div id="header_inner" class="fixed">
-   <div id="logo">
-     
-   </div>
-   <div class="main">
-     <div class="row-logo">
-       <a href="#"></a>
-     </div>
-   </div>
-   {{if response.menu:}}
-   <div id="menu">
-   <ul>
-    {{for _name,_active,_link in response.menu:}}
-    <li><a href="{{=_link}}" onmouseover="this.ccc=this.style.backgroundColor;this.style.backgroundColor='white';" onMouseOut="this.style.backgroundColor=this.ccc;" {{if not _active:}}class="inactive"{{pass}}>{{=_name}}</a></li>
-    {{pass}}
-   </ul>
-   </div>
-   {{pass}}
-  </div>
-  <ul>
-  <li><a href="/{{=request.application}}/news">{{=T("News")}}</a></li>
-  <li><a href="/{{=request.application}}">{{=T("Meetings")}}</a></li>
-  <li><a href="/{{=request.application}}/folders">{{=T("Files")}}</li>
-  <li><a href="/{{=request.application}}/surveys">{{=T("Surveys")}}</a></li>
-  <li><a href="/{{=request.application}}/chats">{{=T("Chats")}}</a></li>
-  <li><a href="/{{=request.application}}/groups">{{=T("Groups")}}</a></li>
-</div>
 
-<div id="main">
-  <div id="main_inner" class="fixed">
-    <div id="primaryContent_columnless">
-      <div id="columnA_columnless">  
-        {{if session.token:}}{{=T("Hi")}} {{=session.user_name}} [<a href="{{=URL(r=request,c='cas',f='edit_profile')}}">{{=T("profile")}}</a>][<a href="{{=URL(r=request,c='default',f='logout')}}">{{=T("logout")}}</a>]{{pass}}<br/><br/>
-        {{if response.flash:}}
-        <div id="flash">{{=response.flash}}</div>
-        {{pass}}
-        {{include}}
-      </div>
-    </div>
-  </div>
-</div>
-<div id="footer" class="fixed">
-powered by <a href="http://www.web2py.com">web2py</a> (TM) &copy; 2007, 2008
+
+<div id="wrap">
+
+	<div id="header">
+		<p id="toplinks">{{=session.user_name}} | <a href="{{=URL(r=request,c='default',f='logout')}}">{{=T("Logout")}}</a></p>
+		<h1><a href="index.html">FoG</a></h1>
+		<p id="slogan">Fellowship of the game</p>
+	</div>
+
+	{{if response.menu:}}
+	<div id="menu">
+		<ul>
+		{{for _name,_active,_link in response.menu:}}
+		<li><a href="{{=_link}}" onmouseover="this.ccc=this.style.backgroundColor;this.style.backgroundColor='white';" onMouseOut="this.style.backgroundColor=this.ccc;" {{if not _active:}}class="inactive"{{pass}}>{{=_name}}</a></li>
+		{{pass}}
+		</ul>
+	</div>
+	{{pass}}
+
+
+	<div id="content">
+		{{if response.flash:}}
+		<div id="flash">{{=response.flash}}</div>
+		{{pass}}
+		{{include}}
+	</div>  
+
+	<div id="sidebar">
+		<h2>Menu</h2>
+		<ul class="menu-nav">
+			<li><a href="/{{=request.application}}/news"><span>{{=T("News")}}</span></a></li>
+			<li><a href="/{{=request.application}}"><span>{{=T("Meetings")}}</span></a></li>
+			<li><a href="/{{=request.application}}/folders"><span>{{=T("Files")}}</span></a></li>
+			<li><a href="/{{=request.application}}/surveys"><span>{{=T("Surveys")}}</span></a></li>
+			<li><a href="/{{=request.application}}/chats"><span>{{=T("Chats")}}</span></a></li>
+			<li><a href="/{{=request.application}}/groups"><span>{{=T("Groups")}}</span></a></li>
+		</ul>
+    </div>  
+		
+	<div id="footer" class="fixed">
+		powered by <a href="http://www.web2py.com">web2py</a> (TM) &copy; 2007, 2008
+	</div>
 </div>
 </body>
 </html>

@@ -12,7 +12,7 @@
 {{if len(myfolders):}}
 <table>
 {{for a in myfolders:}}
-<tr class="myitems" id="{{=a.folder.name}}"><td>[F{{=a.folder.id}}]</td><td><a onclick="$('#box{{=a.folder.id}}').slideToggle();">{{=a.folder.name}}</a> owned by <a href="mailto:{{=a.user.email}}">{{=a.user.name}}</a>
+<tr class="myitems" id="{{=a.folder.name}}"><td>[F{{=a.folder.id}}]</td><td><a onclick="$('#box{{=a.folder.id}}').slideToggle();">{{=a.folder.name}}</a> owned by <a href="mailto:{{=a.user.email}}">{{=a.user.username}}</a>
 <div id="box{{=a.folder.id}}" class="box">
 {{=XML(a.folder.description)}}
 <span style="visibility:hidden">{{=''.join(['[G%s]'%i for i in a.accessible_to])}}</span>

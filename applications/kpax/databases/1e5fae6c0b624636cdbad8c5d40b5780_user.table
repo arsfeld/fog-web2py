@@ -3,7 +3,7 @@ S'username'
 p2
 S'CHAR(512)'
 p3
-sS'cell_phone'
+sS'password'
 p4
 S'CHAR(512)'
 p5
@@ -23,9 +23,9 @@ sS'member_since'
 p12
 S'DATE'
 p13
-sS'usp'
+sS'last_attempt_time'
 p14
-S'CHAR(512)'
+S'INTEGER'
 p15
 sS'nrousp'
 p16
@@ -39,27 +39,27 @@ sS'course'
 p20
 S'CHAR(512)'
 p21
-sS'email'
+sS'verification'
 p22
 S'CHAR(512)'
 p23
-sS'verification'
+sS'lastname'
 p24
 S'CHAR(512)'
 p25
-sS'lastname'
+sS'usp'
 p26
 S'CHAR(512)'
 p27
-sS'last_attempt_time'
+sS'id'
 p28
-S'INTEGER'
+S'INTEGER PRIMARY KEY AUTOINCREMENT'
 p29
 sS'course_year'
 p30
 S'CHAR(512)'
 p31
-sS'password'
+sS'cell_phone'
 p32
 S'CHAR(512)'
 p33
@@ -67,9 +67,9 @@ sS'email_gmail'
 p34
 S'CHAR(512)'
 p35
-sS'id'
+sS'email'
 p36
-S'INTEGER PRIMARY KEY AUTOINCREMENT'
+S'CHAR(512)'
 p37
 sS'current_area'
 p38

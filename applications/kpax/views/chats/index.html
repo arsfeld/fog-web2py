@@ -13,7 +13,7 @@
 {{if len(chats):}}
 <table>
 {{for k,a in enumerate(chats):}}
-<tr class="myitems" id="{{=a.chat_line.name}}"><td>[A{{=a.chat_line.id}}]</td><td><a onclick="$('#box{{=a.chat_line.id}}').slideToggle();">{{=a.chat_line.name}}</a> created by <a href="mailto:{{=a.user.email}}">{{=a.user.name}}</a>
+<tr class="myitems" id="{{=a.chat_line.name}}"><td>[A{{=a.chat_line.id}}]</td><td><a onclick="$('#box{{=a.chat_line.id}}').slideToggle();">{{=a.chat_line.name}}</a> created by <a href="mailto:{{=a.user.email}}">{{=a.user.username}}</a>
 <div id="box{{=a.chat_line.id}}" class="box">
 <span style="visibility:hidden">{{=''.join(['[G%s]'%i for i in a.accessible_to])}}</span>
 {{=XML(a.chat_line.description)}}

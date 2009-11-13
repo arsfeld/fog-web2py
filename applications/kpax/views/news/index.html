@@ -17,7 +17,7 @@
 {{if len(announcements):}}
 <table>
 {{for k,a in enumerate(announcements):}}
-<tr class="myitems" id="{{=a.announcement.title}}"><td>[A{{=a.announcement.id}}]</td><td><a onclick="$('#box{{=a.announcement.id}}').slideToggle();">{{=a.announcement.title}}</a> posted by <a href="mailto:{{=a.user.email}}">{{=a.user.name}}</a> on {{=a.announcement.posted_on}}
+<tr class="myitems" id="{{=a.announcement.title}}"><td>[A{{=a.announcement.id}}]</td><td><a onclick="$('#box{{=a.announcement.id}}').slideToggle();">{{=a.announcement.title}}</a> posted by <a href="mailto:{{=a.user.email}}">{{=a.user.username}}</a> on {{=a.announcement.posted_on}}
 [<a href="{{=URL(r=request,f='ignore_announcement',args=[a.announcement.id])}}">ignore</a>]
 <div id="box{{=a.announcement.id}}" class="box">
 <span style="visibility:hidden">{{=''.join(['[G%s]'%i for i in a.accessible_to])}}</span>

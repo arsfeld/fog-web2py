@@ -4,6 +4,8 @@ import datetime;
 timestamp=datetime.datetime.today()
 today=datetime.date.today()
 
+T.force('pt-br')
+
 db=SQLDB("sqlite://main.db")
 
 db.define_table('user',

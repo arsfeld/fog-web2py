@@ -94,7 +94,7 @@ def show_page():
     documents=db(db.document.page==page.id).select(orderby=db.document.title.lower())
     comments=db(db.comment.page==page.id)\
                (db.comment.author==db.user.id).select()
-    old_pages=db(db.old_page.page==page.id)(db.old_page.modified_by==db.user.id).select(db.old_page.id,db.old_page.modified_on,db.user.name,db.user.id,orderby=~db.old_page.id)
+    old_pages=db(db.old_page.page==page.id)(db.old_page.modified_by==db.user.id).select(db.old_page.id,db.old_page.modified_on,db.user.username,db.user.id,orderby=~db.old_page.id)
     return dict(folder=folder,pages=pages,page=page,form=form,
                 documents=documents,comments=comments,old_pages=old_pages)
 

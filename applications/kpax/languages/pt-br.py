@@ -12,6 +12,7 @@
 'Meetings': 'Reuni\xc3\xb5es',
 'News': 'Noticias',
 'No pending announcements': 'Sem mais not\xc3\xadcias',
+'None': 'None',
 'Surveys': 'Pesquisas',
 'True': 'True',
 'Username:': 'Nome de usu\xc3\xa1rio:',

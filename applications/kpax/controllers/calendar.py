@@ -1,4 +1,5 @@
 # coding: utf8
-# try something like
+if not session.token: redirect(LOGIN)
+
 def index(): 
     return dict(message="hello from calendar.py")

@@ -1,3 +1,4 @@
+import socket
 import random
 import time; now=time.time()
 import datetime; 
@@ -6,7 +7,11 @@ today=datetime.date.today()
 
 T.force('pt-br')
 
-db=SQLDB("sqlite://main.db")
+if socket.gethostname() == 'fog':
+    db=SQLDB('mysql://web2py_intra:EdSwpaNzHtm7Ls3z@localhost/web2py_intra')
+else:
+    db=SQLDB("sqlite://main.db")
+
 
 db.define_table('user',
                 SQLField('firstname'),
